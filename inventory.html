@@ -25,61 +25,71 @@
             padding: 0;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: var(--white);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                background-color: var(--white);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
 
-        .header .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-blue);
-        }
+            .header .logo {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--primary-blue);
+            }
 
-        .sidebar {
-            width: 250px;
-            background-color: var(--primary-blue);
-            color: white;
-            height: 100vh;
-            padding-top: 20px;
-            position: fixed;
-            transition: width 0.3s ease;
-            overflow: hidden;
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .sidebar.collapsed .sidebar-item span {
-            display: none;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .sidebar-item:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .main-content {
-            margin-left: 260px;
-            padding: 20px;
-            transition: margin-left 0.3s ease;
-        }
-
-        .sidebar.collapsed + .main-content {
-            margin-left: 100px;
-        }
+            .dashboard-container {
+                display: flex;
+            }
+    
+            .sidebar {
+                width: 250px;
+                background-color: var(--primary-blue);
+                color: white;
+                height: 100vh;
+                padding-top: 20px;
+                position: fixed;
+                transition: width 0.3s ease;
+                overflow: hidden;
+            }
+    
+            .sidebar.collapsed {
+                width: 80px;
+            }
+    
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                padding: 12px 20px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+    
+            .sidebar-item i {
+                margin-right: 15px;
+            }
+    
+            .sidebar-item:hover {
+                background-color: rgba(255,255,255,0.1);
+            }
+    
+            .sidebar.collapsed .sidebar-item span {
+                display: none;
+            }
+    
+            /* Main Content */
+            .main-content {
+                margin-left: 260px;
+                padding: 20px;
+                transition: margin-left 0.3s ease;
+                flex-grow: 1;
+            }
+    
+            .sidebar.collapsed + .main-content {
+                margin-left: 100px;
+            }
 
         .inventory-stats {
             display: grid;
@@ -132,14 +142,45 @@
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-content">
-                <div class="sidebar-item" onclick="redirectTo('dashboard.html')">
-                    <i class="fas fa-home"></i><span>Dashboard</span>
+                <div class="sidebar-item active" onclick="redirectTo('dashboard.html')">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
                 </div>
                 <div class="sidebar-item" onclick="redirectTo('orders.html')">
-                    <i class="fas fa-shopping-cart"></i><span>Orders</span>
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
                 </div>
-                <div class="sidebar-item active">
-                    <i class="fas fa-box"></i><span>Inventory</span>
+                <div class="sidebar-item" onclick="redirectTo('inventory.html')">
+                    <i class="fas fa-box"></i>
+                    <span>Inventory</span>
+                </div>
+                <div class="sidebar-item" onclick="redirectTo('customer.html')">
+                    <i class="fas fa-users"></i>
+                    <span>Customer</span>
+                </div>
+                <div class="sidebar-item" onclick="redirectTo('sales.html')">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Sales</span>
+                </div>
+                <div class="sidebar-item" onclick="redirectTo('delivery.html')">
+                    <i class="fas fa-truck"></i>
+                    <span>Delivery</span>
+                </div>
+                <div class="sidebar-item" onclick="redirectTo('offers.html')">
+                    <i class="fas fa-tags"></i>
+                    <span>Offers</span>
+                </div>
+                <div class="sidebar-item" onclick="redirectTo('notification.html')">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </div>
+                <div class="sidebar-item" onclick="redirectTo('account.html')">
+                    <i class="fas fa-cog"></i>
+                    <span>Account</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </div>
             </div>
         </div>

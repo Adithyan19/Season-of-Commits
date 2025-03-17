@@ -1,3 +1,7 @@
+function redirectTo(page) {
+    window.location.href = page;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
 
