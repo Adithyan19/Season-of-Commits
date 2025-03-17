@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medovia Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Medovia</div>
+        <div class="user-info">
+            <span>Welcome, Admin Name</span>
+            <input type="text" placeholder="Search...">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-count">2 New</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-box"></i>
+                    <span>Inventory</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-users"></i>
+                    <span>Customer</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Sales</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Delivery</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-tags"></i>
+                    <span>Offers</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Account</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="stat-details">
+                        <h3>Sales</h3>
+                        <p>1200 <span class="trend positive">+15.27%</span></p>
+                        <small>Since last week</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shopping-basket"></i>
+                    <div class="stat-details">
+                        <h3>Orders</h3>
+                        <p>236 <span class="trend positive">+5.5</span></p>
+                        <small>Since last week</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-friends"></i>
+                    <div class="stat-details">
+                        <h3>Customers</h3>
+                        <p>800 <span class="trend positive">+11.02</span></p>
+                        <small>Since last week</small>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="stat-details">
+                        <h3>Profits</h3>
+                        <p>$12000 <span class="trend positive">+7.5</span></p>
+                        <small>Since last week</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inventory-sections">
+                <div class="section out-of-stock">
+                    <h2>Out of Stock</h2>
+                    <div class="product-grid">
+                        <!-- Repeated product cards for Out of Stock -->
+                        <div class="product-card" onclick="toggleProductDetails(this)">
+                            <img src="placeholder-medicine.png" alt="Medicine">
+                            <div class="product-info">
+                                <h4>Paracetamol Tablets IP</h4>
+                                <p>FRIZIUM 550 - CIPLA</p>
+                                <div class="product-details">
+                                    <span>Batch No: F102</span>
+                                    <span>Expires On: 12/12/25</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Repeat similar product cards -->
+                    </div>
+                </div>
+
+                <div class="section expires-soon">
+                    <h2>Expires Soon</h2>
+                    <div class="product-grid">
+                        <!-- Similar product cards for Expires Soon section -->
+                        <div class="product-card" onclick="toggleProductDetails(this)">
+                            <img src="placeholder-medicine.png" alt="Medicine">
+                            <div class="product-info">
+                                <h4>Paracetamol Tablets IP</h4>
+                                <p>FRIZIUM 550 - CIPLA</p>
+                                <div class="product-details">
+                                    <span>Batch No: F102</span>
+                                    <span>Expires On: 12/12/25</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Repeat similar product cards -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
