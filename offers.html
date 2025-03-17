@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers - Medovia</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1E40AF;
+            --background-gray: #F3F4F6;
+            --text-dark: #1F2937;
+            --white: #FFFFFF;
+            --green: #22C55E;
+            --yellow: #EAB308;
+            --red: #DC2626;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* Sidebar */
+        .dashboard-container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-blue);
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-item i {
+            margin-right: 15px;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .sidebar.collapsed .sidebar-item span {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            flex-grow: 1;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 100px;
+        }
+
+        /* Offers Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #E5E7EB;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .status.active { color: var(--green); font-weight: bold; }
+        .status.expiring { color: var(--yellow); font-weight: bold; }
+        .status.expired { color: var(--red); font-weight: bold; }
+
+        /* Add Offer Form */
+        .add-offer {
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .add-offer input, .add-offer textarea, .add-offer button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .add-offer textarea {
+            height: 80px;
+        }
+
+        .add-offer button {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-offer button:hover {
+            background-color: #172a6c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Medovia</div>
+        <div class="user-info">
+            <span>Welcome, Admin</span>
+            <input type="text" placeholder="Search...">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-count">4 New</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-item" onclick="redirectTo('dashboard.html')">
+                    <i class="fas fa-home"></i><span>Dashboard</span>
+                </div>
+                <div class="sidebar-item active">
+                    <i class="fas fa-tags"></i><span>Offers</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <h2>Current Offers</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Offer Name</th>
+                        <th>Discount %</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Summer Sale</td>
+                        <td>20%</td>
+                        <td>2025-06-30</td>
+                        <td class="status active">Active</td>
+                        <td>Flat 20% off on all medicines.</td>
+                    </tr>
+                    <tr>
+                        <td>Festive Discount</td>
+                        <td>15%</td>
+                        <td>2025-04-15</td>
+                        <td class="status expiring">Expiring Soon</td>
+                        <td>Limited time 15% discount on selected items.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Add New Offer</h2>
+            <div class="add-offer">
+                <input type="text" id="offerName" placeholder="Offer Name">
+                <input type="number" id="discount" placeholder="Discount %" min="1" max="100">
+                <input type="date" id="expiryDate">
+                <textarea id="offerDescription" placeholder="Offer Description"></textarea>
+                <button onclick="addOffer()">Add Offer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function redirectTo(page) {
+            window.location.href = page;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+
+            sidebar.addEventListener('mouseenter', () => {
+                sidebar.classList.remove('collapsed');
+            });
+
+            sidebar.addEventListener('mouseleave', () => {
+                sidebar.classList.add('collapsed');
+            });
+        });
+
+        function addOffer() {
+            let offerName = document.getElementById("offerName").value;
+            let discount = document.getElementById("discount").value;
+            let expiryDate = document.getElementById("expiryDate").value;
+            let description = document.getElementById("offerDescription").value;
+
+            if (offerName && discount && expiryDate && description) {
+                let table = document.querySelector("tbody");
+                let newRow = `
+                    <tr>
+                        <td>${offerName}</td>
+                        <td>${discount}%</td>
+                        <td>${expiryDate}</td>
+                        <td class="status active">Active</td>
+                        <td>${description}</td>
+                    </tr>`;
+                table.innerHTML += newRow;
+
+                alert("Offer Added Successfully!");
+            } else {
+                alert("Please fill all fields!");
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+    
+
+
+

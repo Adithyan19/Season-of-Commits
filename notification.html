@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Medovia</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1E40AF;
+            --background-gray: #F3F4F6;
+            --text-dark: #1F2937;
+            --white: #FFFFFF;
+            --green: #22C55E;
+            --red: #DC2626;
+            --yellow: #EAB308;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* Sidebar */
+        .dashboard-container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-blue);
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-item i {
+            margin-right: 15px;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .sidebar.collapsed .sidebar-item span {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            flex-grow: 1;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 100px;
+        }
+
+        /* Notifications */
+        .notifications-container {
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .notification {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .notification.unread {
+            background-color: #E0F2FE;
+            font-weight: bold;
+        }
+
+        .notification span {
+            flex-grow: 1;
+        }
+
+        .notification button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .notification button.read {
+            color: var(--green);
+        }
+
+        .notification button.delete {
+            color: var(--red);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .filter-buttons button {
+            padding: 8px 12px;
+            border: none;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .filter-buttons button:hover {
+            background-color: #172a6c;
+        }
+
+        .clear-all {
+            background-color: var(--red);
+            margin-top: 10px;
+        }
+
+        .clear-all:hover {
+            background-color: #a00;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Medovia</div>
+        <div class="user-info">
+            <span>Welcome, Admin</span>
+            <input type="text" placeholder="Search...">
+            <div class="notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-count">4 New</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-item" onclick="redirectTo('dashboard.html')">
+                    <i class="fas fa-home"></i><span>Dashboard</span>
+                </div>
+                <div class="sidebar-item active">
+                    <i class="fas fa-bell"></i><span>Notifications</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <h2>Notifications</h2>
+
+            <div class="filter-buttons">
+                <button onclick="filterNotifications('all')">View All</button>
+                <button onclick="filterNotifications('unread')">Unread</button>
+                <button onclick="filterNotifications('alerts')">Alerts</button>
+                <button onclick="filterNotifications('promotions')">Promotions</button>
+            </div>
+
+            <div class="notifications-container" id="notificationList">
+                <div class="notification unread">
+                    <span>🚨 Alert: Stock running low on Paracetamol! (5 mins ago)</span>
+                    <button class="read" onclick="markAsRead(this)">✔</button>
+                    <button class="delete" onclick="deleteNotification(this)">✖</button>
+                </div>
+                <div class="notification">
+                    <span>🎉 Promo: 20% off on all vitamins! (2 hours ago)</span>
+                    <button class="read" onclick="markAsRead(this)">✔</button>
+                    <button class="delete" onclick="deleteNotification(this)">✖</button>
+                </div>
+            </div>
+
+            <button class="clear-all" onclick="clearAll()">Clear All</button>
+        </div>
+    </div>
+
+    <script>
+        function redirectTo(page) {
+            window.location.href = page;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+
+            sidebar.addEventListener('mouseenter', () => {
+                sidebar.classList.remove('collapsed');
+            });
+
+            sidebar.addEventListener('mouseleave', () => {
+                sidebar.classList.add('collapsed');
+            });
+        });
+
+        function markAsRead(button) {
+            let notification = button.parentElement;
+            notification.classList.remove('unread');
+            button.remove();
+        }
+
+        function deleteNotification(button) {
+            let notification = button.parentElement;
+            notification.remove();
+        }
+
+        function clearAll() {
+            document.getElementById('notificationList').innerHTML = "";
+        }
+
+        function filterNotifications(type) {
+            let notifications = document.querySelectorAll(".notification");
+
+            notifications.forEach(notification => {
+                notification.style.display = "flex";
+
+                if (type === "unread" && !notification.classList.contains("unread")) {
+                    notification.style.display = "none";
+                } else if (type === "alerts" && !notification.innerText.includes("🚨")) {
+                    notification.style.display = "none";
+                } else if (type === "promotions" && !notification.innerText.includes("🎉")) {
+                    notification.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
