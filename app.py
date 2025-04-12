@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
 
@@ -17,6 +17,34 @@ def customer():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/api/dashboard-data')
+def dashboard_data():
+    data = {
+        "sales": {"value": 1200, "change": "+15.27%"},
+        "orders": {"value": 236, "change": "+5.5"},
+        "customers": {"value": 800, "change": "+11.02"},
+        "profits": {"value": 12000, "change": "+7.5"},
+        "out_of_stock": [
+            {
+                "name": "Paracetamol Tablets IP",
+                "desc": "FRIZIUM 550 - CIPLA",
+                "batch": "F102",
+                "expires": "12/12/25",
+                "image": "/static/images/medicine1.png"
+            }
+        ],
+        "expiring_soon": [
+            {
+                "name": "Paracetamol Tablets IP",
+                "desc": "FRIZIUM 550 - CIPLA",
+                "batch": "F102",
+                "expires": "12/12/25",
+                "image": "/static/images/medicine1.png"
+            }
+        ]
+    }
+    return jsonify(data)
 
 @app.route('/delivery')
 def delivery():
