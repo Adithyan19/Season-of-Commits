@@ -59,5 +59,5 @@ The project emphasizes modern UI/UX principles with a collapsible sidebar, respo
 
    
 bash
-   git clone https://github.com/Adithyan19/Pharmacy-Dashboard.git
-   cd Pharmacy-Dashboard
+   git clone https://github.com/Adithyan19/Season-of-Commits.git
+   cd Season-of-Commits
