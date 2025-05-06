@@ -49,9 +49,7 @@
             width: 250px;
             background-color: var(--primary-blue);
             color: white;
-            height: 100vh;
             padding-top: 20px;
-            position: fixed;
             transition: width 0.3s ease;
             overflow: hidden;
         }
@@ -82,14 +80,14 @@
 
         /* Main Content */
         .main-content {
-            margin-left: 260px;
+            margin-left: 2.5%;
             padding: 20px;
             transition: margin-left 0.3s ease;
             flex-grow: 1;
         }
 
         .sidebar.collapsed + .main-content {
-            margin-left: 100px;
+            margin-left: 2.5%;
         }
 
         /* Offers Table */
@@ -101,6 +99,7 @@
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         th, td {
@@ -149,6 +148,13 @@
         .add-offer button:hover {
             background-color: #172a6c;
         }
+        
+        .empty-table-message {
+            padding: 15px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -157,11 +163,9 @@
             <img src="{{ url_for('static', filename='Medovialogo.svg') }}" style="height: auto; width: 60%" alt="Medovia">
         </div>
         <div class="user-info">
-            <span>Welcome, Admin</span>
-            <input type="text" placeholder="Search...">
             <div class="notifications">
                 <i class="fas fa-bell"></i>
-                <span class="notification-count">4 New</span>
+                <span class="notification-count">{{ notification_count }} New</span>
             </div>
         </div>
     </div>
@@ -170,7 +174,7 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-content"></div>
         
-            <div class="sidebar-item active" onclick="location.href='/dashboard'">
+            <div class="sidebar-item" onclick="location.href='/dashboard'">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
             </div>
@@ -194,7 +198,7 @@
                 <i class="fas fa-truck"></i>
                 <span>Delivery</span>
             </div>
-            <div class="sidebar-item" onclick="location.href='/offers'">
+            <div class="sidebar-item active" onclick="location.href='/offers'">
                 <i class="fas fa-tags"></i>
                 <span>Offers</span>
             </div>
@@ -213,7 +217,7 @@
         </div>
 
         <div class="main-content">
-            <h2>Current Offers</h2>
+            <h2>Active Offers</h2>
             <table>
                 <thead>
                     <tr>
@@ -225,20 +229,81 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% if active_offers %}
+                        {% for offer in active_offers %}
+                        <tr>
+                            <td>{{ offer.name }}</td>
+                            <td>{{ offer.discount }}%</td>
+                            <td>{{ offer.expiry_date }}</td>
+                            <td class="status active">{{ offer.status }}</td>
+                            <td>{{ offer.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-table-message">No active offers available</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <h2>Expiring Soon</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td>Summer Sale</td>
-                        <td>20%</td>
-                        <td>2025-06-30</td>
-                        <td class="status active">Active</td>
-                        <td>Flat 20% off on all medicines.</td>
+                        <th>Offer Name</th>
+                        <th>Discount %</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Description</th>
                     </tr>
+                </thead>
+                <tbody>
+                    {% if expiring_offers %}
+                        {% for offer in expiring_offers %}
+                        <tr>
+                            <td>{{ offer.name }}</td>
+                            <td>{{ offer.discount }}%</td>
+                            <td>{{ offer.expiry_date }}</td>
+                            <td class="status expiring">{{ offer.status }}</td>
+                            <td>{{ offer.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-table-message">No offers expiring soon</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            
+            <h2>Expired Offers</h2>
+            <table>
+                <thead>
                     <tr>
-                        <td>Festive Discount</td>
-                        <td>15%</td>
-                        <td>2025-04-15</td>
-                        <td class="status expiring">Expiring Soon</td>
-                        <td>Limited time 15% discount on selected items.</td>
+                        <th>Offer Name</th>
+                        <th>Discount %</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Description</th>
                     </tr>
+                </thead>
+                <tbody>
+                    {% if expired_offers %}
+                        {% for offer in expired_offers %}
+                        <tr>
+                            <td>{{ offer.name }}</td>
+                            <td>{{ offer.discount }}%</td>
+                            <td>{{ offer.expiry_date }}</td>
+                            <td class="status expired">{{ offer.status }}</td>
+                            <td>{{ offer.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-table-message">No expired offers</td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
 
@@ -254,36 +319,48 @@
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
-        
         function addOffer() {
-            let offerName = document.getElementById("offerName").value;
-            let discount = document.getElementById("discount").value;
-            let expiryDate = document.getElementById("expiryDate").value;
-            let description = document.getElementById("offerDescription").value;
+            const offerName = document.getElementById("offerName").value;
+            const discount = parseInt(document.getElementById("discount").value);
+            const expiryDate = document.getElementById("expiryDate").value;
+            const description = document.getElementById("offerDescription").value;
 
-            if (offerName && discount && expiryDate && description) {
-                let table = document.querySelector("tbody");
-                let newRow = `
-                    <tr>
-                        <td>${offerName}</td>
-                        <td>${discount}%</td>
-                        <td>${expiryDate}</td>
-                        <td class="status active">Active</td>
-                        <td>${description}</td>
-                    </tr>`;
-                table.innerHTML += newRow;
-
-                alert("Offer Added Successfully!");
-            } else {
+            if (!offerName || !discount || !expiryDate || !description) {
                 alert("Please fill all fields!");
+                return;
             }
+
+            // Create request payload
+            const data = {
+                name: offerName,
+                discount: discount,
+                expiry_date: expiryDate,
+                description: description
+            };
+
+            // Send to API
+            fetch('/api/offers/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === "success") {
+                    alert("Offer added successfully!");
+                    // Refresh the page to show the new offer
+                    window.location.reload();
+                } else {
+                    alert("Error adding offer: " + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while adding the offer.");
+            });
         }
     </script>
 </body>
 </html>
-
-
-    
-
-
-

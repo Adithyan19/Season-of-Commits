@@ -48,9 +48,7 @@
             width: 250px;
             background-color: var(--primary-blue);
             color: white;
-            height: 100vh;
             padding-top: 20px;
-            position: fixed;
             transition: width 0.3s ease;
             overflow: hidden;
         }
@@ -75,20 +73,23 @@
             background-color: rgba(255,255,255,0.1);
         }
 
+        .sidebar-item.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
         .sidebar.collapsed .sidebar-item span {
             display: none;
         }
 
-        /* Main Content */
         .main-content {
-            margin-left: 260px;
+            margin-left: 2.5%;
             padding: 20px;
             transition: margin-left 0.3s ease;
             flex-grow: 1;
         }
 
         .sidebar.collapsed + .main-content {
-            margin-left: 100px;
+            margin-left: 2.5%;
         }
 
         table {
@@ -124,6 +125,7 @@
         .chart-container {
             width: 100%;
             max-width: 600px;
+            height: 300px;
             margin: auto;
         }
 
@@ -131,16 +133,30 @@
             width: 100%;
             height: 300px !important;
         }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info input {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">
-            <img src="{{ url_for('static', filename='Medovialogo.svg') }}" style="height: auto; width: 60%" alt="Medovia">
+            <img src="{{ url_for('static', filename='Medovialogo.svg') }}" style="height: auto; width: 60%" alt="Medovia Logo">
         </div>
         <div class="user-info">
             <span>Welcome, Admin</span>
-            <input type="text" placeholder="Search...">
+            <input type="text" id="orderSearch" placeholder="Search orders...">
             <div class="notifications">
                 <i class="fas fa-bell"></i>
                 <span class="notification-count">2 New</span>
@@ -150,15 +166,13 @@
 
     <div class="dashboard-container">
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-content"></div>
-        
-            <div class="sidebar-item active" onclick="location.href='/dashboard'">
+            <div class="sidebar-item" onclick="location.href='/dashboard'">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
             </div>
-            <div class="sidebar-item" onclick="location.href='/orders'">
+            <div class="sidebar-item active" onclick="location.href='/orders'">
                 <i class="fas fa-shopping-cart"></i>
-                <span>Orders</span>
+                <span>Orders</span> 
             </div>
             <div class="sidebar-item" onclick="location.href='/inventory'">
                 <i class="fas fa-box"></i>
@@ -201,7 +215,7 @@
             </div>
 
             <h2>Order Details</h2>
-            <table>
+            <table id="ordersTable">
                 <thead>
                     <tr>
                         <th>Order ID</th>
@@ -212,43 +226,74 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>#1023</td>
-                        <td>John Doe</td>
-                        <td>2025-03-15</td>
-                        <td><span class="status completed">Completed</span></td>
-                        <td>$120</td>
-                    </tr>
-                    <tr>
-                        <td>#1024</td>
-                        <td>Jane Smith</td>
-                        <td>2025-03-16</td>
-                        <td><span class="status pending">Pending</span></td>
-                        <td>$80</td>
-                    </tr>
+                    <!-- Will be filled dynamically -->
                 </tbody>
             </table>
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
-        const ctx = document.getElementById('ordersChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Mar 10', 'Mar 11', 'Mar 12', 'Mar 13', 'Mar 14', 'Mar 15', 'Mar 16'],
-                datasets: [{
-                    label: 'Total Orders',
-                    data: [30, 25, 40, 35, 50, 45, 60],
-                    backgroundColor: 'rgba(30, 64, 175, 0.8)',
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+        document.addEventListener("DOMContentLoaded", () => {
+            loadOrdersTable();
+            loadOrdersChart();
         });
+
+        document.getElementById("orderSearch").addEventListener("input", function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#ordersTable tbody tr");
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? "" : "none";
+            });
+        });
+
+        function loadOrdersTable() {
+            fetch('/api/orders')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.querySelector("#ordersTable tbody");
+                    tbody.innerHTML = "";
+                    data.forEach(order => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${order.order_id}</td>
+                            <td>${order.customer}</td>
+                            <td>${order.date}</td>
+                            <td><span class="status ${order.status.toLowerCase()}">${order.status}</span></td>
+                            <td>${order.total}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(err => console.error("Failed to load orders:", err));
+        }
+
+        function loadOrdersChart() {
+            fetch('/api/orders/chart-data')
+                .then(res => res.json())
+                .then(chart => {
+                    const ctx = document.getElementById('ordersChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: chart.labels,
+                            datasets: [{
+                                label: 'Total Orders',
+                                data: chart.data,
+                                backgroundColor: 'rgba(30, 64, 175, 0.8)',
+                                borderRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                })
+                .catch(err => console.error("Failed to load chart data:", err));
+        }
     </script>
 </body>
 </html>
